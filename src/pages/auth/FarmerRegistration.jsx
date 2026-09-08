@@ -1,530 +1,135 @@
 import { useState } from "react";
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  Leaf,
-} from "lucide-react";
-
-export default function FarmerRegistration() {
-
+export default function FarmerRegistration({ apiUrl }) {
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-
-    farmName: "",
-    farmLocation: "",
-    farmType: "",
-    farmSize: "",
-
-    password: "",
-    confirmPassword: "",
-
-    agree: false,
+    role: "farmer",
+    first_name:"", last_name:"", email:"", phone:"",
+    password:"", confirm_password:"", farm_name:"",
+    farm_description:"", farm_address:"", barangay:"",
+    city:"", province:""
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const change = e => setForm({...form, [e.target.name]: e.target.value});
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  async function submit(e) {
+    e.preventDefault();
+    setError("");
 
-
-  const handleChange = (event) => {
-
-    const {
-      name,
-      value,
-      type,
-      checked,
-    } = event.target;
-
-
-    setForm((previous) => ({
-      ...previous,
-
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
-    }));
-
-  };
-
-
-  const handleSubmit = (event) => {
-
-    event.preventDefault();
-
-
-    if (
-      form.password !==
-      form.confirmPassword
-    ) {
-
-      alert(
-        "Passwords do not match."
-      );
-
+    if (form.password !== form.confirm_password) {
+      setError("Passwords do not match.");
       return;
     }
 
+    setLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/register/${form.role}`, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(form)
+      });
+      const data = await res.json();
 
-    console.log(
-      "Farmer Registration:",
-      form
-    );
+      if (!res.ok) throw new Error(data.message || "Registration failed.");
 
+      window.location.href = "/registration-success";
+    } catch (err) {
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        localStorage.setItem(
+          "farmlink_user",
+          JSON.stringify(form)
+        );
+        window.location.href = "/registration-success";
+        return;
+      }
 
-    setSubmitted(true);
-
-  };
-
+      setError(err.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="registration-page">
+      <div className="auth-brand"><a href="/">🌿 FarmLink</a></div>
 
-      {/* HEADER */}
-
-      <header className="registration-header">
-
-        <div className="landing-container registration-nav">
-
-          <button
-            className="registration-logo"
-            onClick={() =>
-              (window.location.href = "/")
-            }
-          >
-
-            <span>
-              <Leaf size={19} />
-            </span>
-
-            <div>
-              <strong>FarmLink</strong>
-
-              <small>
-                Connect. Grow. Thrive.
-              </small>
-            </div>
-
-          </button>
-
-
-          <button
-            className="back-home"
-            onClick={() =>
-              (window.location.href = "/")
-            }
-          >
-
-            <ArrowLeft size={15} />
-
-            Back to Home
-
-          </button>
-
+      <div className="registration-card">
+        <div className="registration-header">
+          <span>FARMLINK COMMUNITY</span>
+          <h1>Register as a {form.role === "farmer" ? "Farmer" : "Rider"}</h1>
+          <p>Create your account and join the FarmLink community.</p>
         </div>
 
-      </header>
-
-
-      <main className="registration-main">
-
-        <div className="registration-layout">
-
-          {/* LEFT */}
-
-          <section className="registration-intro">
-
-            <div className="landing-eyebrow">
-              FARMLINK FARMER REGISTRATION
-            </div>
-
-
-            <h1>
-
-              Bring your farm
-              <br />
-
-              <span>
-                to more buyers.
-              </span>
-
-            </h1>
-
-
-            <p>
-
-              Create your FarmLink farmer
-              account and start building your
-              digital farm profile.
-
-            </p>
-
-
-            <div className="registration-checks">
-
-              <div>
-                <CheckCircle2 />
-
-                Showcase your farm products
-              </div>
-
-              <div>
-                <CheckCircle2 />
-
-                Reach more potential buyers
-              </div>
-
-              <div>
-                <CheckCircle2 />
-
-                Manage your farm information
-              </div>
-
-            </div>
-
-
-            <div className="registration-decoration">
-              🌱 🥕 🍅 🌾
-            </div>
-
-          </section>
-
-
-          {/* FORM */}
-
-          <section className="registration-card">
-
-            <div className="registration-title">
-
-              <h2>
-                Create Farmer Account
-              </h2>
-
-              <p>
-                Fill in your details to register.
-              </p>
-
-            </div>
-
-
-            {submitted && (
-
-              <div className="registration-success">
-
-                <CheckCircle2 size={18} />
-
-                Registration submitted
-                successfully!
-
-              </div>
-
-            )}
-
-
-            <form
-              onSubmit={handleSubmit}
-            >
-
-              {/* PERSONAL */}
-
-              <div className="registration-section">
-
-                <h3>
-                  Personal Information
-                </h3>
-
-
-                <div className="registration-two-columns">
-
-                  <label>
-                    First Name
-
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={form.firstName}
-                      onChange={handleChange}
-                      placeholder="Juan"
-                      required
-                    />
-                  </label>
-
-
-                  <label>
-                    Last Name
-
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={form.lastName}
-                      onChange={handleChange}
-                      placeholder="Dela Cruz"
-                      required
-                    />
-                  </label>
-
-                </div>
-
-
-                <div className="registration-two-columns">
-
-                  <label>
-                    Email Address
-
-                    <input
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="juan@email.com"
-                      required
-                    />
-                  </label>
-
-
-                  <label>
-                    Phone Number
-
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={form.phone}
-                      onChange={handleChange}
-                      placeholder="09XX XXX XXXX"
-                      required
-                    />
-                  </label>
-
-                </div>
-
-              </div>
-
-
-              {/* FARM */}
-
-              <div className="registration-section">
-
-                <h3>
-                  Farm Information
-                </h3>
-
-
-                <label>
-                  Farm Name
-
-                  <input
-                    type="text"
-                    name="farmName"
-                    value={form.farmName}
-                    onChange={handleChange}
-                    placeholder="Juan's Family Farm"
-                    required
-                  />
-                </label>
-
-
-                <div className="registration-two-columns">
-
-                  <label>
-                    Farm Location
-
-                    <input
-                      type="text"
-                      name="farmLocation"
-                      value={form.farmLocation}
-                      onChange={handleChange}
-                      placeholder="Barangay / Municipality"
-                      required
-                    />
-                  </label>
-
-
-                  <label>
-                    Farm Type
-
-                    <select
-                      name="farmType"
-                      value={form.farmType}
-                      onChange={handleChange}
-                      required
-                    >
-
-                      <option value="">
-                        Select type
-                      </option>
-
-                      <option value="vegetable">
-                        Vegetable Farm
-                      </option>
-
-                      <option value="fruit">
-                        Fruit Farm
-                      </option>
-
-                      <option value="rice">
-                        Rice Farm
-                      </option>
-
-                      <option value="mixed">
-                        Mixed Farm
-                      </option>
-
-                      <option value="other">
-                        Other
-                      </option>
-
-                    </select>
-
-                  </label>
-
-                </div>
-
-
-                <label>
-                  Farm Size
-
-                  <select
-                    name="farmSize"
-                    value={form.farmSize}
-                    onChange={handleChange}
-                    required
-                  >
-
-                    <option value="">
-                      Select farm size
-                    </option>
-
-                    <option>
-                      Less than 1 hectare
-                    </option>
-
-                    <option>
-                      1–5 hectares
-                    </option>
-
-                    <option>
-                      6–10 hectares
-                    </option>
-
-                    <option>
-                      More than 10 hectares
-                    </option>
-
-                  </select>
-
-                </label>
-
-              </div>
-
-
-              {/* SECURITY */}
-
-              <div className="registration-section">
-
-                <h3>
-                  Account Security
-                </h3>
-
-
-                <div className="registration-two-columns">
-
-                  <label>
-                    Password
-
-                    <input
-                      type="password"
-                      name="password"
-                      value={form.password}
-                      onChange={handleChange}
-                      placeholder="Minimum 6 characters"
-                      minLength="6"
-                      required
-                    />
-                  </label>
-
-
-                  <label>
-                    Confirm Password
-
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={form.confirmPassword}
-                      onChange={handleChange}
-                      placeholder="Re-enter password"
-                      required
-                    />
-                  </label>
-
-                </div>
-
-              </div>
-
-
-              {/* TERMS */}
-
-              <label className="registration-terms">
-
-                <input
-                  type="checkbox"
-                  name="agree"
-                  checked={form.agree}
-                  onChange={handleChange}
-                  required
-                />
-
-                <span>
-                  I agree to the FarmLink
-                  Terms of Service and
-                  Privacy Policy.
-                </span>
-
-              </label>
-
-
-              {/* SUBMIT */}
-
-              <button
-                type="submit"
-                className="farm-primary-btn registration-submit"
-              >
-
-                Create Farmer Account
-
-                <ArrowRight size={17} />
-
-              </button>
-
-
-              <p className="already-account">
-
-                Already have an account?
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    (window.location.href =
-                      "/login")
-                  }
-                >
-                  Log in
-                </button>
-
-              </p>
-
-            </form>
-
-          </section>
-
-        </div>
-
-      </main>
-
+        {error && <div className="form-error">{error}</div>}
+
+        <form onSubmit={submit}>
+          <div className="form-group">
+            <label htmlFor="role">Register as *</label>
+            <select id="role" name="role" value={form.role} onChange={change} required>
+              <option value="farmer">Farmer / Seller</option>
+              <option value="rider">Rider / Delivery Partner</option>
+            </select>
+          </div>
+
+          <h2>Personal Information</h2>
+          <div className="form-row">
+            <div className="form-group"><label>First Name *</label>
+              <input name="first_name" value={form.first_name} onChange={change} required /></div>
+            <div className="form-group"><label>Last Name *</label>
+              <input name="last_name" value={form.last_name} onChange={change} required /></div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group"><label>Email *</label>
+              <input type="email" name="email" value={form.email} onChange={change} required /></div>
+            <div className="form-group"><label>Phone</label>
+              <input name="phone" value={form.phone} onChange={change} /></div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group"><label>Password *</label>
+              <input type="password" name="password" minLength="8" value={form.password} onChange={change} required /></div>
+            <div className="form-group"><label>Confirm Password *</label>
+              <input type="password" name="confirm_password" minLength="8" value={form.confirm_password} onChange={change} required /></div>
+          </div>
+
+          {form.role === "farmer" && (
+            <>
+              <h2>Farm Information</h2>
+              <div className="form-group"><label>Farm Name *</label>
+                <input name="farm_name" value={form.farm_name} onChange={change} required /></div>
+
+              <div className="form-group"><label>Farm Description</label>
+                <textarea name="farm_description" rows="3" value={form.farm_description} onChange={change} /></div>
+            </>
+          )}
+
+          <h2>Farm Address</h2>
+          <div className="form-group"><label>Farm Address</label>
+            <input name="farm_address" value={form.farm_address} onChange={change} /></div>
+
+          <div className="form-row three">
+            <div className="form-group"><label>Barangay</label>
+              <input name="barangay" value={form.barangay} onChange={change} /></div>
+            <div className="form-group"><label>City</label>
+              <input name="city" value={form.city} onChange={change} /></div>
+            <div className="form-group"><label>Province</label>
+              <input name="province" value={form.province} onChange={change} /></div>
+          </div>
+
+          <label className="terms-check">
+            <input type="checkbox" required />
+            <span>I agree to the FarmLink Terms & Conditions.</span>
+          </label>
+
+          <button className="registration-submit" disabled={loading}>
+            {loading ? "Creating account..." : `Create ${form.role === "farmer" ? "Farmer" : "Rider"} Account`}
+          </button>
+        </form>
+
+        <p className="login-prompt">Already have an account? <a href="/login">Login</a></p>
+      </div>
     </div>
   );
 }

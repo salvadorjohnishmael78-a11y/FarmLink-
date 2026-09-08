@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 import Home from "../pages/landing/Home";
+import Login from "../pages/auth/Login";
 import FarmerRegistration from "../pages/auth/FarmerRegistration";
 import RegistrationSuccess from "../pages/auth/RegistrationSuccess";
 
@@ -40,13 +41,21 @@ export default function AppRoutes() {
         />
 
 
-        {/* FARMER REGISTRATION */}
+        {/* AUTHENTICATION */}
+
+        <Route
+          path="/login"
+          element={<Login apiUrl="http://127.0.0.1:5000/api" />}
+        />
+
+        <Route
+          path="/register"
+          element={<FarmerRegistration />}
+        />
 
         <Route
           path="/register/farmer"
-          element={
-            <FarmerRegistration />
-          }
+          element={<FarmerRegistration />}
         />
 
 

@@ -1,91 +1,51 @@
-import { Leaf } from "lucide-react";
-
-export default function Footer() {
+function Footer() {
   return (
-    <footer className="landing-footer">
-
-      <div className="landing-container footer-grid">
-
-        <div className="footer-brand">
-
-          <div className="footer-logo">
-
-            <span>
-              <Leaf size={18} />
-            </span>
-
-            <div>
-              <strong>FarmLink</strong>
-
-              <small>
-                Connect. Grow. Thrive.
-              </small>
-            </div>
-
-          </div>
-
-          <p>
-            Connecting farmers, buyers,
-            and communities through better
-            agricultural opportunities.
-          </p>
-
+    <footer className="footer" id="contact">
+      <div className="footer-container">
+        <div className="footer-column">
+          <h3>CUSTOMER SERVICE</h3>
+          <a href="#help">Help Center</a>
+          <a href="#buy">How to Buy</a>
+          <a href="#sell">How to Sell</a>
+          <a href="#tracking">Order Tracking</a>
+          <a href="#delivery">Delivery Information</a>
+          <a href="#returns">Returns & Refunds</a>
+          <a href="#contact">Contact Us</a>
         </div>
 
-
-        <div>
-          <h4>Company</h4>
-
-          <span>About Us</span>
-          <span>How It Works</span>
-          <span>Why FarmLink</span>
-          <span>Features</span>
+        <div className="footer-column">
+          <h3>ABOUT FARMLINK</h3>
+          <a href="#about">About Us</a>
+          <a href="#mission">Our Mission</a>
+          <a href="#farmers">Partner Farmers</a>
+          <a href="#terms">Terms & Conditions</a>
+          <a href="#privacy">Privacy Policy</a>
         </div>
 
-
-        <div>
-          <h4>For Farmers</h4>
-
-          <span>Register as Farmer</span>
-          <span>Farmer Login</span>
-          <span>My Farm</span>
+        <div className="footer-column">
+          <h3>PAYMENT</h3>
+          <p>GCash</p>
+          <p>Maya</p>
+          <p>Cash on Delivery</p>
+          <p>Bank Transfer</p>
         </div>
 
-
-        <div>
-          <h4>For Buyers</h4>
-
-          <span>Shop Products</span>
-          <span>My Orders</span>
-          <span>Help & Support</span>
-        </div>
-
-
-        <div>
-          <h4>Support</h4>
-
-          <span>Help Center</span>
-          <span>Contact Us</span>
-          <span>Report a Problem</span>
+        <div className="footer-column">
+          <h3>FOLLOW US</h3>
+          <p>Facebook</p>
+          <p>Instagram</p>
+          <p>TikTok</p>
+          <p>Messenger</p>
         </div>
 
       </div>
 
-
-      <div className="landing-container footer-bottom">
-
-        <span>
-          © 2026 FarmLink.
-          All rights reserved.
-        </span>
-
-        <span>
-          Terms of Service &nbsp; | &nbsp;
-          Privacy Policy
-        </span>
-
+      <div className="footer-bottom">
+        <span>© 2026 FarmLink. All Rights Reserved.</span>
+        <span>Country &amp; Region: 🇵🇭 Philippines</span>
       </div>
-
     </footer>
   );
 }
+
+export default Footer;
